@@ -1,0 +1,260 @@
+Description of light curve data
+-------------------------------
+There's a webpage describing the instrument:
+
+https://www.noao.edu/noao/staff/everett/nessi/
+
+The wide field mode and camera setup for light curves has been
+less explored than what's used for speckle operations.  The readouts
+I used for both light curves were done using a conventional
+amplifier, making the cameras operate like conventional CCDs rather 
+than EMCCDs, but with an electronic frame transfer shutter.  The 
+amplifier is relatively low readnoise with (I think) pretty well 
+behaved biases and 1-second readout times.  With the frame 
+transfer shutter, there's almost no overhead time because exposures
+and readouts happen simultaneously.
+
+The wide field mode has fast optics and obvious vignetting.  I took
+dome flats in griz and some sky flats in u.  I hope they will flatten
+images well.
+
+The plate scale should be near 0.08 arcsec/pixel.  It probably varies
+a fair bit across the field.
+
+I made some photon transfer curves (apr10 data) which show the cameras 
+to be linear in response up to ~55000 ADUs.  Some of the data consist 
+of co-added exposures (coadding is post-readout) and only the counts in 
+an individual exposure needed to be below that threshold.  Some of the
+data can range into the 100s of thousands of ADUs and are saved at 32
+bits/pixel in those cases.
+
+My measurements for the cameras were:
+
+Blue camera mean bias level = 502 ADUs
+Blue camera gain = 0.82 e/ADU.
+Blue camera readnoise = 5.9 ADUs = 4.8e
+Blue camera linear up to 57000 ADUs above bias
+
+Red camera mean bias level = 502 ADUs
+Red camera gain = 0.78 e/ADU.
+Red camera readnoise = 5.8 ADUs = 4.5e
+Red camera linear up to 55000 ADUs above bias
+
+FITS file names begin nb* or nr* referring to a blue or red channel 
+camera respectively.  They contain a timestamp of file creation 
+(HH.MM.SS in UT) and a consecutive file number.  All images are full 
+array and unbinned, so 1024x1024 pixels and most are 3-D fits files that
+come from what Andor calls "kinetic series", or simply a sequence
+in time where the 3rd dimension is a frame number.  The FITS files are 
+either 16 bit integers or 32 bits/pixel.
+
+The computer time was been set to UT to within ~1second according to
+inspection of the observatory clock at the beginning of the night.  
+The FITS headers contain that computer time in the FRAME keyword, 
+which is only recorded to the nearest second.  A very accurate relative 
+time can be found between the starting times of any two adjacent frames 
+in the series using the KCT keyword.  In order to inspect the data as 
+the night goes along, I used a finite series length (e.g. 10 or 20 
+frames) where, at the end of each series, the file gets written.  The 
+number of frames in each the series is written to the NUMKIN keyword.
+
+In most cases, each frame in the kinetic series consists of a coadded 
+sum of a small set of shorter exposures.  The exposure time is found 
+in the EXPOSURE keyword.  The time between the start of one exposure and
+the next within the group of coadded exposures (what Andor calls
+accumulation) is given by the ACT keyword.  The number of accumulations
+in each frame is given by the NUMACC keyword.
+
+The two cameras are not completely in sync due to the script behavior.  
+To my eye, it appeared that the exposures in the red camera lagged behind 
+the blue by a few tenths of a second.
+
+Given writing and actions of the script that I use to start the next 
+series there's a lag of some several seconds between the time the last 
+data is exposed in one series and the start of data-taking in the next.
+
+notes from 10 April UT
+-----------------------------------------------------------------------
+calibration notes:
+------------------
+Afternoon dome flat calibration data put in calibrations/ subdirectory.
+* Wide field mode, conventional amplifier, frame transfer mode, 4.33musec vshift speed,
+ normal vertical clocking voltage amplitude, 1MHz readout rate, Gain setting 2.
+* lamps started at 1000.
+
+image #		UT	  what
+-------		-----	  ----------
+1		22:54	  1.105sec "biases" with shutters closed, kinetic series of 12.
+                          (timestamp on these images was daylight savings...then I
+                          changed it for the rest!)
+2		23:11	  u/z flats 1.105 sec each; u is massively underexposed.
+			      Must use sky for u!
+3	        23:15	  g/i flats 40sec/1.105 sec. Series of 12
+4		23:24     r/i flats 5sec/1.105sec.  Series of 12
+
+* at this point lamps are turned up to 1300...
+
+5-28	     23:29-23:43  r/716nm flats at different exposure times starting at 1.105sec, 
+                          ramping up to saturation (for a photon transfer curve).  Each
+                          file is a kinetic series of 2.	  
+I noted 2 donuts in the red camera flats centered at (col,row)=(583,423) and (680,511)
+
+light curve notes:
+------------------
+Transit observation of HAT-P-26  
+  g+i filters
+  Wide field optics (reset focus -120 vs. speckle focus).  
+  Full 1024x1024 frames, unbinned.
+  Conventional amplifier
+  Frame transfer mode 
+  1MHz readout rate
+  4.33musec vertical shift speed 
+  Gain setting="2" 
+  Vertical clocking voltage amplitude="normal".
+  EMCCD Cooling to -60C.
+
+  Operating with the i-band essentially at focus.  The g-band is out-of-focus
+  due to the non-flatness of the dichroic.  However, with the seeing conditions
+  (which aren't good), the g-band stellar profiles look more round than the
+  better seeing astigmatic/donut shape profiles native to this configuration.
+  Note that a reflection, of perhaps HAT-P-26, appears in the red camera.  The
+  red camera also has quite strong variation in background level that I suspect
+  is reflected moonlight.  It changed over the course of the transit.
+
+  Starting out some test exposures.  I wanted to see the exposure level in a
+  single frame, set exposure time to safely fit in a 55000 ADU linearity
+  limit, and check exposure level in an accumulated (coadded) image to see
+  that it made logical sense.
+
+   This exposure with 1 accumulation and kinetic series length 1 and 1.105 sec exptime:
+H720001 1928 05:42    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+   This exposure with 1 accumulation and kinetic series length 1 and 3 sec exptime:
+H720001 1929 05:44    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+   This exposure with 20 accumulations and kinetic series length 1 and 3 sec exposures,
+   but accidentally saved as a 16-bit integer FITS file:
+H720001 1930 05:47    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+   This exposure with 20 accumulations and kinetic series length 1 and 3 sec exposures,
+   and saving now with 32 bits/pixel (BITPIX=32):
+H720001 1931 05:50    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+
+  Now the real light curve.  Have switched to a longer kinetic series (for 10 minutes 
+  between mouse clicks).  The time sampling is 60.09 seconds within each series and
+  uses 20 coadded 3-second exposures to get there. 
+   
+  Starting out with an airmass a bit > 1.3.  The sky appears to be clear 
+  at the moment.  Light clouds might be on the way.
+
+H720001 1932 05:54    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1933 06:04    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+looks like 1.0 arcsec FWHM (i-band) in the last image.
+H720001 1934 06:14    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1935 06:24    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1936 06:35    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1937 06:45    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1938 06:55    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1939 07:05    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1940 07:15    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1941 07:25    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+   07:27 moved +30 in focus.  Had seen wider FWHM, thought it was temperature drop
+         requiring an increase in telescope focus value.
+H720001 1942 07:35    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+   07:37 moved -30 in focus.  Examination of last image suggests previous focus
+         change may have been a mistake!
+H720001 1943 07:45    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1944 07:55    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1945 08:05    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1946 08:15    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1947 08:25    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+  around now a band of cirrus seemed to move through, but clearing afterwards
+H720001 1948 08:35    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1949 08:46    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+  seeing closer to 0.8 arcseconds lately based on i-band images.
+H720001 1950 08:56    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1951 09:06    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1952 09:16    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1953 09:26    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+H720001 1954 09:36    0    0 14:12:37.5 +04:03:36 2000.00  11.8   BARCLAY/HAT-P-26
+  Finished light curve at 09:46 with an airmass of 1.20
+
+
+
+notes from 12 April UT
+-----------------------------------------------------------------------
+calibration notes:
+------------------
+Dome flats this afternoon, written into calibrations/ directory (23:05-23:24UT)
+lamps set to 1300
+WF optics, conventional amplifier, 1MHz readout, 4.33musec vshift
+Normal vertical clock voltage amplitude, frame transfer mode, -60C.
+
+image#            description
+------            -----------
+1                 g+i filters, kinetic series of 12 dome flats, 10sec/1.105sec exptime
+2                 r+z filters, kinetic series of 12 dome flats, 3sec/1.105sec exptime
+
+20-37             at 00:59UT took a number of 1.105sec biases with the conventional
+                  amplifier, 4.33musec vshift, 1MHz, FT, kinetic series length=1.
+                  These are taken a few seconds apart.
+
+
+Light curve notes:
+------------------
+The sky looks clear!
+
+Wide field optics, full frame images, unbinned, conventional amplifier,
+frame transfer mode, 1MHz, 4.33microsecond vshift speed, Gain setting=2,
+normal vertical clocking voltage amplitude.
+
+Arranged the target and the only somewhat comparable comparison star on
+opposite sides of the CCD.  The stars don't appear to be too close to
+the edges, but that's to be determined.  Vignetting pattern is roughly symmetrical 
+about the center of the images and rotation of the instrument could have been 
+done, apparently, but the stars would be at comparable points relative to 
+this pattern.
+
+Defocussed telescope relative to speckle focus by -370 in order to (at least
+roughly) get defocus similar in both cameras.  It appears that the 
+shapes of the donuts are rather different on a given camera (TrES-4 vs. its 
+comparison star).
+
+Using u+z filters first for some test data before switching over to g+i...
+
+Tested exposure times.  Trying for 1-minute sampling.
+Chose 60 second exposures in u, 6x10 second exposures in z.  u is very faint
+  while peak counts in z is ~10000 ADUs.
+u camera: 60s exptime, 1 accumulation, kinetic series length=10
+z camera: 10s exptime, 6 accumulations, kinetic series length=10
+
+Airmass was ~2.0 to start
+
+H720002 2612 07:04    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2613 07:14    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+  for this next exposure, shortened the kinetic series to length=5 to move
+  on with the other filters earlier:
+H720002 2614 07:24    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+
+  Switched now to g+i filters...
+  Chose 15 second exposures in each filter with coadds of 4 exposures each for
+  time sampling of 60 seconds.  Peak counts are ~10000 ADUs in both filters.
+
+  first image set consists of a kinetic series of 10:
+H720002 2615 07:32    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+  now changed kinetic series length to 20 for convenience and changed file format 
+  from 16-bits to 32 bits to stay safe...
+H720002 2616 07:45    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2617 08:05    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2618 08:26    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2619 08:46    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2620 09:06    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2621 09:26    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2622 09:46    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2623 10:06    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2624 10:26    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2625 10:46    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2626 11:06    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2627 11:26    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+H720002 2628 11:46    0    0 17:53:13.0 +37:12:43 2000.00  11.7   BARCLAY/TrES-4
+
+Note: this light curve finishes up with a zenith distance of 5 degrees.  That 
+worked well enough.  Had it been much closer, the telescope couldn't have tracked 
+very well. I'm not sure exactly where the cutoff would be.  I can ask.
