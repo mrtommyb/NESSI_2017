@@ -1,6 +1,6 @@
 # fits files are too big!
 *.fits
-
+.DS_Store
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
