@@ -1,0 +1,9 @@
+Blue camera mean bias level = 502 ADUs
+Blue camera gain = 0.82 e/ADU.
+Blue camera readnoise = 5.9 ADUs = 4.8e
+Blue camera linear up to 57000 ADUs above bias
+
+Red camera mean bias level = 502 ADUs
+Red camera gain = 0.78 e/ADU.
+Red camera readnoise = 5.8 ADUs = 4.5e
+Red camera linear up to 55000 ADUs above bias
